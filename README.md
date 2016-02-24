@@ -11,3 +11,8 @@ File system utility functions
   * Takes a src compressed file and unzips the contents to the destination file.
 * `FileExists`
   * Test to see if a file exists and return true or false
+* `CopyFile`
+  * Copies the file at the source path to the provided destination.
+* `CopyDirectory`
+  * Copies the directory at the source path to the provided destination, with the option of recursively copying subdirectories.
+  
