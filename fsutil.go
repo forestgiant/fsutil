@@ -217,3 +217,42 @@ func CopyDirectory(source string, destination string, recursive bool) error {
 
 	return nil
 }
+
+// IsEmpty test if a directory is empty
+func IsEmpty(path string) (bool, error) {
+	d, err := os.Open(path)
+	if err != nil {
+		return false, err
+	}
+	defer d.Close()
+
+	_, err = d.Readdirnames(1)
+	if err == io.EOF {
+		return true, nil
+	}
+
+	return false, err
+}
+
+// RemoveDirContent removes all the files in a directory
+// but keeps the directory
+func RemoveDirContent(path string) error {
+	d, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+
+	defer d.Close()
+	names, err := d.Readdirnames(-1)
+	if err != nil {
+		return err
+	}
+
+	for _, name := range names {
+		err = os.RemoveAll(filepath.Join(path, name))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}

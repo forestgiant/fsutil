@@ -82,3 +82,73 @@ func TestCopyDirectory(t *testing.T) {
 		t.Error("Unable to clean up after running CopyDirectory tests. " + err.Error())
 	}
 }
+
+func TestIsEmpty(t *testing.T) {
+	tests := []struct {
+		dir      string
+		expected bool
+		pass     bool
+	}{
+		{"", false, false},
+		{"./TestFiles/EmptyDir", true, true},
+		{"TestFiles", false, true},
+	}
+
+	for _, test := range tests {
+		result, err := IsEmpty(test.dir)
+		if err != nil && test.pass {
+			t.Error("IsEmpty errored", err)
+		} else if err == nil && !test.pass {
+			t.Error("IsEmpty should have erroed")
+		}
+
+		if result != test.expected {
+			t.Errorf("Expected %t, Result was: %t", test.expected, result)
+		}
+	}
+}
+
+func TestRemoveDirContents(t *testing.T) {
+	tests := []struct {
+		testDir string
+		tempDir string
+		pass    bool
+	}{
+		{"./TestFiles/TextFiles", "./TestFiles/TextFilesCopy", true},
+		{"", "", false},
+	}
+
+	for _, test := range tests {
+		// Make a copy of the directory for testing
+		if test.pass {
+			err := CopyDirectory(test.testDir, test.tempDir, true)
+			if err != nil {
+				t.Error("Unabled to copy directory", err)
+			}
+		}
+
+		// Remove all contents in TextFilesCopy
+		err := RemoveDirContent(test.tempDir)
+		if err != nil && test.pass {
+			t.Error("Error Removing Directory Contents", err)
+		} else if err == nil && !test.pass {
+			t.Error("RemoveDirContents should have errored")
+		}
+
+		// Test if directory is empty
+		empty, err := IsEmpty(test.tempDir)
+		if err != nil && test.pass {
+			t.Error("IsEmpty errored")
+		} else if err == nil && !test.pass {
+			t.Error("IsEmpty should have errored")
+		}
+
+		if !empty && test.pass {
+			t.Error("RemoveDirContents Failed. Directory should be empty")
+		}
+
+		// Delete TextFilesCopy
+		os.RemoveAll(test.tempDir)
+	}
+
+}
