@@ -1,9 +1,35 @@
 package fsutil
 
 import (
+	"io/ioutil"
 	"os"
 	"testing"
 )
+
+func TestCheckIfCompressed(t *testing.T) {
+	var compressedZipFile = "./TestFiles/ZipFiles/test.zip"
+	var uncompressedZipFile = "./TestFiles/OtherFiles/othertestfile.txt"
+
+	var tests = []struct {
+		source       string
+		shouldAssert bool
+	}{
+		{compressedZipFile, true},
+		{uncompressedZipFile, false},
+	}
+
+	for _, test := range tests {
+		f, err := os.Open(test.source)
+		if err != nil {
+			t.Error("Error opening file", err)
+		}
+		r := CheckIfCompressed(f)
+		if r != test.shouldAssert {
+			t.Errorf("Test should of returned %v but returned %v instead", test.shouldAssert, r)
+		}
+	}
+
+}
 
 func TestCopyFile(t *testing.T) {
 	var badSourceFile = "./TestFiles/FGFailedSourceFileLocation.fg"
@@ -84,13 +110,21 @@ func TestCopyDirectory(t *testing.T) {
 }
 
 func TestIsEmpty(t *testing.T) {
+	dir, err := ioutil.TempDir("", "test")
+	if err != nil {
+		t.Error("Error creating temp file", err)
+	}
+
+	// Remove the temp dir once test returns
+	defer os.RemoveAll(dir)
+
 	tests := []struct {
 		dir      string
 		expected bool
 		pass     bool
 	}{
 		{"", false, false},
-		{"./TestFiles/EmptyDir", true, true},
+		{dir, true, true},
 		{"TestFiles", false, true},
 	}
 
