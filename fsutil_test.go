@@ -115,6 +115,9 @@ func TestIsEmpty(t *testing.T) {
 		t.Error("Error creating temp file", err)
 	}
 
+	// Remove the temp dir once test returns
+	defer os.RemoveAll(dir)
+
 	tests := []struct {
 		dir      string
 		expected bool
@@ -137,9 +140,6 @@ func TestIsEmpty(t *testing.T) {
 			t.Errorf("Expected %t, Result was: %t", test.expected, result)
 		}
 	}
-
-	// Remove temp dir
-	os.RemoveAll(dir)
 }
 
 func TestRemoveDirContents(t *testing.T) {
