@@ -109,7 +109,7 @@ func TestCopyDirectory(t *testing.T) {
 }
 
 func TestIsEmpty(t *testing.T) {
-	// I'm ignoring error checking because I'm assuming os.Open is tested and working
+	// I'm ignoring error checking because I'm assuming ioutil.TempDir is tested and working
 	// is this bad practice?
 	dir, _ := ioutil.TempDir("", "test")
 
