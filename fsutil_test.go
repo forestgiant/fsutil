@@ -137,6 +137,9 @@ func TestIsEmpty(t *testing.T) {
 			t.Errorf("Expected %t, Result was: %t", test.expected, result)
 		}
 	}
+
+	// Remove temp dir
+	os.RemoveAll(dir)
 }
 
 func TestRemoveDirContents(t *testing.T) {
