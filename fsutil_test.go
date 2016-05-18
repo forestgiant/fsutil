@@ -19,9 +19,10 @@ func TestCheckIfCompressed(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		// I'm ignoring error checking because I'm assuming os.Open is tested and working
-		// is this bad practice?
-		f, _ := os.Open(test.source)
+		f, err := os.Open(test.source)
+		if err != nil {
+			t.Error("Error opening file", err)
+		}
 		r := CheckIfCompressed(f)
 		if r != test.shouldAssert {
 			t.Errorf("Test should of returned %v but returned %v instead", test.shouldAssert, r)
@@ -109,9 +110,10 @@ func TestCopyDirectory(t *testing.T) {
 }
 
 func TestIsEmpty(t *testing.T) {
-	// I'm ignoring error checking because I'm assuming ioutil.TempDir is tested and working
-	// is this bad practice?
-	dir, _ := ioutil.TempDir("", "test")
+	dir, err := ioutil.TempDir("", "test")
+	if err != nil {
+		t.Error("Error creating temp file", err)
+	}
 
 	tests := []struct {
 		dir      string
