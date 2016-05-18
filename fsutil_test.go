@@ -1,6 +1,7 @@
 package fsutil
 
 import (
+	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -108,13 +109,17 @@ func TestCopyDirectory(t *testing.T) {
 }
 
 func TestIsEmpty(t *testing.T) {
+	// I'm ignoring error checking because I'm assuming os.Open is tested and working
+	// is this bad practice?
+	dir, _ := ioutil.TempDir("", "test")
+
 	tests := []struct {
 		dir      string
 		expected bool
 		pass     bool
 	}{
 		{"", false, false},
-		{"./TestFiles/EmptyDir", true, true},
+		{dir, true, true},
 		{"TestFiles", false, true},
 	}
 
