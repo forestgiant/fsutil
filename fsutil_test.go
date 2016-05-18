@@ -5,6 +5,30 @@ import (
 	"testing"
 )
 
+func TestCheckIfCompressed(t *testing.T) {
+	var compressedZipFile = "./TestFiles/ZipFiles/test.zip"
+	var uncompressedZipFile = "./TestFiles/OtherFiles/othertestfile.txt"
+
+	var tests = []struct {
+		source       string
+		shouldAssert bool
+	}{
+		{compressedZipFile, true},
+		{uncompressedZipFile, false},
+	}
+
+	for _, test := range tests {
+		// I'm ignoring error checking because I'm assuming os.Open is tested and working
+		// is this bad practice?
+		f, _ := os.Open(test.source)
+		r := CheckIfCompressed(f)
+		if r != test.shouldAssert {
+			t.Errorf("Test should of returned %v but returned %v instead", test.shouldAssert, r)
+		}
+	}
+
+}
+
 func TestCopyFile(t *testing.T) {
 	var badSourceFile = "./TestFiles/FGFailedSourceFileLocation.fg"
 	var badDestinationFile = "./TestFiles/NonexistantDirectory/FGFailedDestFileLocation.fg"
